@@ -1,0 +1,23 @@
+{
+  "name": "http2-router",
+  "version": "0.0.1",
+  "description": "",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "files": [
+    "build/src"
+  ],
+  "author": "maxwellium",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc -p .",
+    "cert": "cd test && openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost-privkey.pem -out localhost-cert.pem"
+  },
+  "devDependencies": {
+    "@types/node": "^11.10.4",
+    "gts": "^0.9.0",
+    "typescript": "~3.1.0"
+  }
+}
