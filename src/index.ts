@@ -5,12 +5,13 @@ export const NEXT = Symbol( 'next' );
 export interface Context {
   req: Http2ServerRequest;
   res: Http2ServerResponse;
+  [ k: string ]: any
 }
 
 export type Handler = ( ctx: Context ) => void | any | Promise<any>;
 
 export interface Route {
-  method: string;
+  methods: string[];
   route: string;
   regex: RegExp;
   handler: Handler;
@@ -22,17 +23,20 @@ export class Routes {
   public routes: Route[] = [];
 
 
-  add( method: string, route: string, handler: Handler ) {
+  add( methods: string | string[], route: string, handler: Handler ) {
 
     const regex = new RegExp( `^${
       route
         .replace( /\//g, '\\/' )
-        .replace( /(:([^\/\\]+))/g, '[^/?]' )
+        .replace( /(:([^\/\\]+))/g, '[^/?]+?' )
       }$` );
-    method = method.toUpperCase();
+
+    if ( 'string' === typeof methods ) {
+      methods = methods.toUpperCase().split( ',' );
+    }
 
     this.routes.push( {
-      method,
+      methods,
       route,
       regex,
       handler
@@ -45,10 +49,7 @@ export class Routes {
     const url = ctx.req.url.replace( /(\?.+)/, '' );
 
     for ( const route of this.routes ) {
-      if (
-        ( ctx.req.method === route.method || '*' === route.method ) &&
-        url.match( route.regex )
-      ) {
+      if ( route.methods.includes( ctx.req.method ) && url.match( route.regex ) ) {
         if ( NEXT !== await route.handler.call( route.handler, ctx ) ) {
           return;
         }

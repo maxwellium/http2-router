@@ -5,13 +5,15 @@ class Routes {
     constructor() {
         this.routes = [];
     }
-    add(method, route, handler) {
+    add(methods, route, handler) {
         const regex = new RegExp(`^${route
             .replace(/\//g, '\\/')
-            .replace(/(:([^\/\\]+))/g, '[^/?]')}$`);
-        method = method.toUpperCase();
+            .replace(/(:([^\/\\]+))/g, '[^/?]+?')}$`);
+        if ('string' === typeof methods) {
+            methods = methods.toUpperCase().split(',');
+        }
         this.routes.push({
-            method,
+            methods,
             route,
             regex,
             handler
@@ -20,8 +22,7 @@ class Routes {
     async route(ctx) {
         const url = ctx.req.url.replace(/(\?.+)/, '');
         for (const route of this.routes) {
-            if ((ctx.req.method === route.method || '*' === route.method) &&
-                url.match(route.regex)) {
+            if (route.methods.includes(ctx.req.method) && url.match(route.regex)) {
                 if (exports.NEXT !== await route.handler.call(route.handler, ctx)) {
                     return;
                 }
