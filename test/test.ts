@@ -1,42 +1,62 @@
-import { createServer, createSecureServer } from 'http2';
-import { readFileSync } from 'fs';
-
-import { Routes } from '../src';
-import { join } from 'path';
-
-
-const routes = new Routes();
+import { cert, key } from './certificate';
+import { extractPathParameters, rfc6570likeParser } from '../src/path-parser';
+import { IRouteHandler } from '../src/types';
+import { createSecureServer } from 'http2';
+import { executeRouting } from '../src/index';
+import { handler404 } from '../src/handler-404';
 
 
-routes.add( 'get', '/hi', ( { res } ) => {
-  res.end( 'hello' );
-} );
+const routes: IRouteHandler[] = [];
 
-routes.add( 'post', '/hi', ( { res } ) => {
-  res.end( 'hello post' );
-} );
-
-routes.add( 'get', '/hi/:abc', ( { req, res } ) => {
-  res.end( `hello ${ req.url }` );
+routes.push( {
+  methods: [ 'GET' ],
+  regex: rfc6570likeParser.match( '/users' ),
+  handler: ( { response } ) => response.end( 'hello' )
 } );
 
 
-function run( port = 4200, secure = true ) {
+routes.push( {
+  methods: [ 'GET' ],
+  regex: rfc6570likeParser.match( '/users/{userName}' ),
+  handler: ( { request, response } ) => {
 
-  const server = secure ?
-    createSecureServer( {
-      key: readFileSync( join( __dirname, '..', '..', 'test', 'localhost-privkey.pem' ) ),
-      cert: readFileSync( join( __dirname, '..', '..', 'test', 'localhost-cert.pem' ) )
-    } ) :
-    createServer();
+    const extract = rfc6570likeParser.extract( '/users/{userName}' );
 
-  server.on( 'request', ( req, res ) => routes.route( { req, res } ) );
+    const parameters = extractPathParameters<{ userName: string }>( extract, request.url );
+    if ( !parameters ) {
+
+      return;
+
+    }
+    const { userName } = parameters;
+    response.writeHead( 200, { 'Content-Type': 'text/html; charset=utf-8' } );
+    response.end( `hello ${ decodeURI( userName ) }` );
+
+  }
+} );
+
+routes.push( {
+  methods: [ 'GET', 'POST', 'PUT' ],
+  regex: /.*/,
+  handler: handler404
+} );
+
+
+function run( port: number ) {
+
+  const server = createSecureServer( {
+    key,
+    cert
+  } );
+
+  server.on( 'request', ( request, response ) => executeRouting( { request, response }, routes ) );
 
   server.on( 'error', ( err ) => console.error( err ) );
   server.listen( port );
 
   console.log( 'listening on', port );
   return server;
+
 }
 
-run();
+run( 8080 );

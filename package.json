@@ -10,14 +10,14 @@
   "author": "maxwellium",
   "repository": "github:maxwellium/http2-router",
   "license": "MIT",
+  "type": "module",
   "keywords": [],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc -p .",
-    "cert": "cd test && openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost-privkey.pem -out localhost-cert.pem"
+    "test": "node --es-module-specifier-resolution=node ./build/test/test.js",
+    "compile": "tsc"
   },
   "devDependencies": {
-    "@types/node": "^12.0.4",
-    "typescript": "^3.5.1"
+    "@types/node": "^12.12.17",
+    "typescript": "^3.7.3"
   }
 }

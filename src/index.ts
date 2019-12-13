@@ -1,65 +1,40 @@
-import { Http2ServerRequest, Http2ServerResponse } from 'http2';
+import { IContext, IRouteHandler } from './types';
+import { parse } from 'url';
 
-export const NEXT = Symbol( 'next' );
 
-export interface Context {
-  req: Http2ServerRequest;
-  res: Http2ServerResponse;
-  [ k: string ]: any
+export function matchRouteHandlers( { request }: IContext, routeHandlers: IRouteHandler[] ) {
+
+  return routeHandlers.filter( routeHandler => {
+
+    if ( !routeHandler.methods.includes( request.method ) ) {
+
+      return false;
+
+    }
+    const { pathname } = parse( request.url );
+    const match = ( pathname || '' ).match( routeHandler.regex );
+    return match !== null;
+
+  } );
+
 }
 
-export type Handler = ( ctx: Context ) => void | any | Promise<any>;
+export async function executeRouting( ctx: IContext, routeHandlers: IRouteHandler[] ) {
 
-export interface Route {
-  methods: string[];
-  route: string;
-  regex: RegExp;
-  handler: Handler;
-}
+  const handlers = matchRouteHandlers( ctx, routeHandlers );
 
+  for ( const { handler } of handlers ) {
 
-export class Routes {
+    try {
 
-  public routes: Route[] = [];
+      await handler( ctx );
 
+    } catch ( e ) {
 
-  add( methods: string | string[], route: string, handler: Handler ) {
+      console.log( e );
 
-    const regex = new RegExp( `^${
-      route
-        .replace( /\//g, '\\/' )
-        .replace( /(:([^\/\\]+))/g, '[^/?]+?' )
-      }$` );
-
-    if ( 'string' === typeof methods ) {
-      methods = methods.toUpperCase().split( ',' );
     }
 
-    this.routes.push( {
-      methods,
-      route,
-      regex,
-      handler
-    } );
-  }
-
-
-  async route( ctx: Context ) {
-
-    const url = ctx.req.url.replace( /(\?.+)/, '' );
-
-    for ( const route of this.routes ) {
-      if ( route.methods.includes( ctx.req.method ) && url.match( route.regex ) ) {
-        if ( NEXT !== await route.handler.call( route.handler, ctx ) ) {
-          return;
-        }
-      }
-    }
-
-    //FIXME: add logging and 404 configurable handler
-    console.error( '404', ctx.req.method, ctx.req.url );
-    ctx.res.statusCode = 404;
-    ctx.res.end( 'not found' );
   }
 
 }
