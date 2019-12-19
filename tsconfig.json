@@ -12,7 +12,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "sourceMap": true,
-    "module": "esnext",
+    "module": "commonjs",
     "strict": true,
     "target": "es2019",
     "rootDir": ".",

@@ -10,7 +10,6 @@
   "author": "maxwellium",
   "repository": "github:maxwellium/http2-router",
   "license": "MIT",
-  "type": "module",
   "keywords": [],
   "scripts": {
     "test": "node --es-module-specifier-resolution=node ./build/test/test.js",

@@ -1,4 +1,6 @@
-export const cert = `-----BEGIN CERTIFICATE-----
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cert = `-----BEGIN CERTIFICATE-----
 MIIDCTCCAfGgAwIBAgIUOwjNrICkQAiaGbeWz5CPiBVU4SAwDQYJKoZIhvcNAQEL
 BQAwFDESMBAGA1UEAwwJbG9jYWxob3N0MB4XDTE5MTIxMzE0MzE1OFoXDTIwMDEx
 MjE0MzE1OFowFDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEF
@@ -18,7 +20,7 @@ ti3kpnTL8GVEElXKfYjUQSsTgRG77h7hntJkSDvohYROOTIgSsfedfscJHU6u436
 rRUHGbwfZu/Qd1LzMg==
 -----END CERTIFICATE-----
 `;
-export const key = `-----BEGIN PRIVATE KEY-----
+exports.key = `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDjQ4MdX8w0vyNr
 FBvCtuybGaYzYh5azOnN21t8C4dwh2uWvu5it3QxbDWnkcHB9H5Kg1AX4c6r7Er3
 ijceuUNMoWikZTsLC5xyMQtaVPxUPgUCe9nkbunI2FnbwjPoAV00OGkyQTSMM8FU
