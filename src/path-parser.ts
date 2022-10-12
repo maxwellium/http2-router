@@ -1,4 +1,4 @@
-import { parse } from 'url';
+import { parse } from 'node:url';
 
 export interface IPathParser {
   match: ( path: string ) => RegExp;

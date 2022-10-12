@@ -1,5 +1,5 @@
-import { IContext, IRouteHandler } from './types';
-import { parse } from 'url';
+import { IContext, IRouteHandler } from './types.js';
+import { parse } from 'node:url';
 
 
 export function matchRouteHandlers( { request }: IContext, routeHandlers: IRouteHandler[] ) {

@@ -1,4 +1,4 @@
-import { Http2ServerRequest, Http2ServerResponse } from 'http2';
+import { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
 
 export interface IContext {
   request: Http2ServerRequest;

@@ -1,4 +1,4 @@
-import { parse } from 'url';
+import { parse } from 'node:url';
 export const rfc6570likeParser = {
     match: path => new RegExp(`^${path.replace(/\/\{[^/{}]+\}/g, '/[^/]+').replace(/\//g, '\\/')}$`),
     extract: path => new RegExp(`^${path.replace(/(\/\{([^/{}]+)\})/g, '/(?<$2>[^/]+)').replace(/\//g, '\\/')}$`)

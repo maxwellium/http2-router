@@ -1,5 +1,5 @@
-/// <reference types="node" />
-import { Http2ServerRequest, Http2ServerResponse } from 'http2';
+/// <reference types="node" resolution-mode="require"/>
+import { Http2ServerRequest, Http2ServerResponse } from 'node:http2';
 export interface IContext {
     request: Http2ServerRequest;
     response: Http2ServerResponse;

@@ -1,4 +1,4 @@
-import { parse } from 'url';
+import { parse } from 'node:url';
 export function matchRouteHandlers({ request }, routeHandlers) {
     return routeHandlers.filter(routeHandler => {
         if (!routeHandler.methods.includes(request.method)) {
